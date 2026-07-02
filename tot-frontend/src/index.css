@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+body {
+    background-image: url("/assets/images/totLoginbg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}

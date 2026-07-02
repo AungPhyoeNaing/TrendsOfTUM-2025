@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+.hidden-content {
+    display: none;
+}
+
+.createContainer:focus-within .hidden-content {
+    display: flex;
+}
+
+/* category animation */
+@layer presentation, demo;
+
+@layer demo {
+    :root {
+        --selected-color: oklch(99% 0.44 280);
+        --light-color: oklch(90% 0.49 269);
+
+        /*     for body bg */
+        /* --bg-color: oklch(90% 0.37 274);
+    --bg-color-center: oklch(99% 0.17 285); */
+        @supports (interpolate-size: allow-keywords) {
+            interpolate-size: allow-keywords;
+        }
+    }
+
+    select {
+        position: relative;
+        display: flex;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        place-items: center;
+        justify-content: center;
+        font-size: 16px;
+        line-height: 1;
+        text-align: center;
+        /* background: var(--selected-color); */
+        border: none;
+        border-radius: 50%;
+        aspect-ratio: 1;
+        appearance: none;
+        cursor: pointer;
+        @supports (appearance: base-select) {
+            appearance: base-select;
+        }
+        &::picker-icon {
+            display: none;
+        }
+    }
+
+    /*   currently using a point-event hack for touch-devices */
+    @supports (appearance: base-select) {
+        select::picker(select) {
+            position: absolute;
+            inset-block: anchor(top) anchor(bottom);
+            z-index: auto;
+            display: none;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            /* background: var(--light-color); */
+            border: 0;
+            border-radius: 60px;
+            box-shadow: oklch(73% 0.39 280 / 0%) 0px 10px 50px;
+            overflow: clip;
+            appearance: base-select;
+            transition: width 0.5s ease-out, height 0.5s ease-out,
+                box-shadow 0.5s ease-out, display 0.5s, overlay 0.5s,
+                pointer-events 0.5s;
+            transition-behavior: allow-discrete;
+            @media (max-width: 600px) {
+                inset-block: anchor(top) auto;
+            }
+        }
+
+        select:open::picker(select) {
+            display: flex;
+            width: auto;
+            height: auto;
+            /* box-shadow: oklch(73% 0.39 280 / 58%) 0px 10px 50px; */
+            pointer-events: auto;
+            @starting-style {
+                width: 40px;
+                height: 40px;
+                pointer-events: none;
+            }
+        }
+    }
+
+    @keyframes wiggle {
+        0% {
+            transform: rotate(10deg);
+        }
+        25% {
+            transform: rotate(-10deg);
+        }
+        50% {
+            transform: rotate(20deg);
+        }
+        75% {
+            transform: rotate(-5deg);
+        }
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    option {
+        position: relative;
+        display: flex;
+        flex: 0 0 64px;
+        min-width: 40px;
+        min-height: 40px;
+        padding: 0 1rem;
+        align-items: center;
+        line-height: 1;
+        /* background: var(--light-color); */
+        cursor: pointer;
+        transition: background 0.4s;
+
+        @media (max-width: 600px) {
+            justify-content: center;
+        }
+        &:first-child {
+            border-radius: 60px 0 0 60px;
+
+            @media (max-width: 600px) {
+                border-radius: 60px 60px 0 0;
+            }
+        }
+        &:last-child {
+            border-radius: 0 60px 60px 0;
+            @media (max-width: 600px) {
+                border-radius: 0 0 60px 60px;
+            }
+        }
+        &:is(:hover, :focus-visible) span {
+            animation: wiggle 2s ease-out infinite;
+        }
+
+        &:checked {
+            position: sticky;
+            inset-block: 0;
+            inset-inline-end: 0;
+            z-index: 1;
+            /* background: var(--selected-color); */
+            @media (max-width: 600px) {
+                inset-block: auto 0;
+                inset-inline: 0;
+            }
+        }
+
+        &::checkmark {
+            display: none;
+        }
+
+        @media (max-width: 500px) {
+            padding: 0.5rem;
+        }
+    }
+    option:hover {
+        background-size: 20px;
+    }
+}
+
+@layer presentation {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+}
